@@ -175,12 +175,20 @@ const gallery = [
         </h2>
         <Ornament />
         <p class="mt-3 text-center text-muted">
-          Choose a service and write us a message. Then send it on Telegram or by SMS.
-          <span class="km" lang="km">ជ្រើសរើសសេវាកម្ម ហើយសរសេរសារមកយើង។ បន្ទាប់មក ផ្ញើវាតាម Telegram ឬ SMS។</span>
+          Answer a few questions. Then send them to us on Telegram or by SMS.
+          <span class="km" lang="km">ឆ្លើយសំណួរពីរបី។ បន្ទាប់មក ផ្ញើវាមកយើងតាម Telegram ឬ SMS។</span>
         </p>
 
-        <form id="booking" class="mt-8 grid gap-5 rounded-3xl bg-white p-6 shadow-xl shadow-rose/10 ring-1 ring-sun/40 sm:p-8">
+        <form id="booking" class="mt-8 grid gap-5 rounded-3xl bg-white p-6 shadow-xl shadow-rose/10 ring-1 ring-sun/40 sm:grid-cols-2 sm:p-8">
           <label class="block">
+            <span class="font-semibold">Your name <span class="km text-muted" lang="km">ឈ្មោះរបស់អ្នក</span></span>
+            <input name="name" required autocomplete="name" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block">
+            <span class="font-semibold">Your phone <span class="km text-muted" lang="km">លេខទូរសព្ទរបស់អ្នក</span></span>
+            <input name="phone" type="tel" required autocomplete="tel" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block sm:col-span-2">
             <span class="font-semibold">Which service? <span class="km text-muted" lang="km">សេវាកម្មណា?</span></span>
             <select name="service" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3">
               <option value="">Choose… / ជ្រើសរើស…</option>
@@ -198,15 +206,30 @@ const gallery = [
             </select>
           </label>
           <label class="block">
-            <span class="font-semibold">Message <span class="km text-muted" lang="km">សារ</span></span>
-            <textarea
-              name="message"
-              rows="4"
-              placeholder="When would you like to come? Any color or design idea?&#10;តើអ្នកចង់មកពេលណា? មានគំនិតពណ៌ ឬរចនាទេ?"
-              class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3"></textarea>
+            <span class="font-semibold">Date <span class="km text-muted" lang="km">ថ្ងៃ</span></span>
+            <input name="date" type="date" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block">
+            <span class="font-semibold">Time <span class="km text-muted" lang="km">ម៉ោង</span> <span class="text-sm font-normal text-muted">(8am – 9pm)</span></span>
+            <input name="time" type="time" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block">
+            <span class="font-semibold">How many people? <span class="km text-muted" lang="km">ប៉ុន្មាននាក់?</span></span>
+            <input name="people" type="number" min="1" max="10" value="1" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <fieldset>
+            <legend class="font-semibold">First time here? <span class="km text-muted" lang="km">មកលើកដំបូង?</span></legend>
+            <div class="mt-3 flex gap-5">
+              <label class="flex items-center gap-2"><input type="radio" name="first" value="Yes" /> Yes / បាទ·ចាស</label>
+              <label class="flex items-center gap-2"><input type="radio" name="first" value="No" checked /> No / ទេ</label>
+            </div>
+          </fieldset>
+          <label class="block sm:col-span-2">
+            <span class="font-semibold">Color or design idea? <span class="km text-muted" lang="km">ពណ៌ ឬគំនិតរចនា?</span></span>
+            <textarea name="notes" rows="3" placeholder="e.g. pink gel with gold stars" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3"></textarea>
           </label>
 
-          <div class="grid gap-3 sm:grid-cols-2">
+          <div class="grid gap-3 sm:col-span-2 sm:grid-cols-2">
             <button type="button" data-send="telegram" class="rounded-full bg-[#229ED9] px-6 py-3 font-semibold text-white hover:opacity-90">
               ✈️ Send on Telegram
             </button>
@@ -214,7 +237,7 @@ const gallery = [
               💬 Send by SMS
             </button>
           </div>
-          <p id="booking-note" class="hidden rounded-xl bg-leaf/50 p-4 text-sm"></p>
+          <p id="booking-note" class="hidden rounded-xl bg-leaf/50 p-4 text-sm sm:col-span-2"></p>
         </form>
       </div>
     </section>
@@ -287,8 +310,19 @@ const gallery = [
 
   function bookingMessage() {
     const d = new FormData(form);
-    const message = d.get('message').trim();
-    return [`Hello SORÉ Nails! I'd like to book: ${d.get('service')}`, message].filter(Boolean).join('\n\n');
+    return [
+      'Hello SORÉ Nails! I want to book:',
+      `Name: ${d.get('name')}`,
+      `Phone: ${d.get('phone')}`,
+      `Service: ${d.get('service')}`,
+      `Date: ${d.get('date')}`,
+      `Time: ${d.get('time')}`,
+      `People: ${d.get('people')}`,
+      `First time: ${d.get('first')}`,
+      d.get('notes') ? `Idea: ${d.get('notes')}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n');
   }
 
   form.querySelectorAll('button[data-send]').forEach((btn) => {
@@ -301,17 +335,23 @@ const gallery = [
         return;
       }
 
-      // Telegram can't fill in a message for a person, so we copy it first.
+      // Telegram can't fill in a message for a person, so we copy it first,
+      // then open the chat. We open it in this same tab: browsers block a new
+      // window that opens after waiting for the copy.
+      const openLink = `<a href="${telegram}" class="mt-2 inline-block rounded-full bg-[#229ED9] px-4 py-2 font-semibold text-white">✈️ Open Telegram</a>`;
+      note.classList.remove('hidden');
       try {
         await navigator.clipboard.writeText(msg);
         note.innerHTML =
-          '✅ Your booking is copied. In Telegram, <b>paste it</b> and press send.<br><span lang="km">✅ ការកក់របស់អ្នកត្រូវបានចម្លង។ នៅក្នុង Telegram សូម<b>បិទភ្ជាប់</b> ហើយចុចផ្ញើ។</span>';
+          '✅ Your booking is copied. In Telegram, <b>paste it</b> and press send.<br><span lang="km">✅ ការកក់របស់អ្នកត្រូវបានចម្លង។ នៅក្នុង Telegram សូម<b>បិទភ្ជាប់</b> ហើយចុចផ្ញើ។</span><br>' +
+          openLink;
+        setTimeout(() => (window.location.href = telegram), 1500);
       } catch {
-        note.textContent = 'Copy this message and send it to us on Telegram:\n\n' + msg;
+        // Copy didn't work: show the message so they can copy it by hand.
         note.style.whiteSpace = 'pre-line';
+        note.textContent = 'Copy this message and send it to us on Telegram:\n\n' + msg + '\n\n';
+        note.insertAdjacentHTML('beforeend', openLink);
       }
-      note.classList.remove('hidden');
-      window.open(telegram, '_blank');
     });
   });
 </script>
