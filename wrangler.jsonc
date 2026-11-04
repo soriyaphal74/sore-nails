@@ -5,7 +5,7 @@
 // dashboard when you connect this repo, or builds will fail.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "vibe-code-cambodia",
+  "name": "sore-nails",
   "compatibility_date": "2026-10-01",
   // Build the site before every deploy. ./dist is not stored in GitHub, so it
   // must be created here, even if the Cloudflare dashboard has no build command.

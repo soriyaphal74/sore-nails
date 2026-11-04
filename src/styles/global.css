@@ -10,13 +10,13 @@
   Every color class like `bg-brand` or `text-ink` comes from here.
 */
 @theme {
-  --color-ink: #1d1a2e;        /* main text */
-  --color-paper: #fbf7f0;      /* page background */
-  --color-brand: #e2552f;      /* main accent (buttons, highlights) */
-  --color-brand-dark: #b83d1c;
-  --color-sun: #f4b33d;        /* second accent */
-  --color-leaf: #2f7d63;       /* third accent */
-  --color-muted: #6b6578;      /* quieter text */
+  --color-ink: #2a2230;        /* main text */
+  --color-paper: #f8f0e7;      /* page background */
+  --color-brand: #1d2f4f;      /* main accent (buttons, highlights) */
+  --color-brand-dark: #13203a;
+  --color-sun: #b8913f;        /* second accent */
+  --color-leaf: #efd3c6;       /* third accent */
+  --color-muted: #6b5a5f;      /* quieter text */
 
   /* Khmer is listed in every font stack so Khmer text always renders well. */
   --font-sans: "Inter Variable", "Kantumruy Pro Variable", system-ui, sans-serif;

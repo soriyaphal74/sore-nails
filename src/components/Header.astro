@@ -2,15 +2,15 @@
 import { site } from '../site';
 
 const links = [
-  { href: '/#how', label: 'How it works' },
-  { href: '/#lessons', label: 'Lessons' },
-  { href: '/setup', label: 'Setup' },
+  { href: '/#prices', label: 'Prices' },
+  { href: '/#gallery', label: 'Gallery' },
+  { href: '/#visit', label: 'Contact' },
 ];
 ---
 
 <header class="sticky top-0 z-20 border-b border-ink/5 bg-paper/85 backdrop-blur">
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-    <a href="/" class="flex items-center gap-2 font-display text-lg font-extrabold tracking-tight">
+    <a href="/" class="flex items-center gap-2 font-display text-lg font-extrabold tracking-tight text-brand">
       <img src="/favicon.svg" alt="" class="size-7" />
       {site.name}
     </a>
@@ -22,7 +22,7 @@ const links = [
           </a>
         ))
       }
-      <a href="/lesson/day-1" class="rounded-full bg-ink px-4 py-2 text-paper hover:bg-brand">Start Day 1</a>
+      <a href="/#book" class="whitespace-nowrap rounded-full bg-sun px-4 py-2 font-semibold text-white hover:bg-brand">Book now</a>
     </nav>
   </div>
 </header>

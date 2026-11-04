@@ -5,449 +5,345 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getDecks } from '../lib/decks';
+import { site } from '../site';
 
-const steps = [
+// PRICES — change names and prices here. `extra: true` shows the price as
+// an add-on ("+$1–3 extra").
+const priceLists = [
   {
-    icon: '🧰',
-    title: 'Choose a stack',
-    titleKm: 'ជ្រើសរើស stack',
-    text: 'Pick the technology the AI will use. AI can help you choose. This week, it’s chosen for you.',
-    textKm: 'ជ្រើសរើសបច្ចេកវិទ្យាដែល AI នឹងប្រើ។ AI អាចជួយអ្នកជ្រើសរើសបាន។ សម្រាប់វគ្គនេះ យើងបានជ្រើសរើសរួចហើយ។',
+    icon: '💅',
+    title: 'Hand nails',
+    titleKm: 'ក្រចកដៃ',
+    items: [
+      { name: 'Basic Manicure', nameKm: 'ថែក្រចកដៃធម្មតា', price: '$3' },
+      { name: 'Regular Nail Polish', nameKm: 'លាបថ្នាំក្រចកធម្មតា', price: '$3' },
+      { name: 'Gel Polish', nameKm: 'លាបថ្នាំជែល', price: '$5' },
+      { name: 'Gel Polish Removal', nameKm: 'លុបថ្នាំជែល', price: '$2' },
+      { name: 'Gel Extensions', nameKm: 'បន្តក្រចកជែល', price: '$10–15' },
+      { name: 'Soft Gel Tips', nameKm: 'បន្តក្រចកសូហ្វជែល', price: '$8–12' },
+      { name: 'French Nail Design', nameKm: 'រចនាក្រចកបែបបារាំង', price: '$7–10' },
+      { name: 'Simple Nail Art', nameKm: 'គំនូរក្រចកសាមញ្ញ', price: '$1–3', extra: true },
+      { name: 'Advanced Nail Art', nameKm: 'គំនូរក្រចកកម្រិតខ្ពស់', price: '$3–8', extra: true },
+      { name: 'Nail Repair', nameKm: 'ជួសជុលក្រចក', price: '$1–2', per: 'nail', perKm: 'ក្រចក' },
+    ],
   },
   {
-    icon: '💬',
-    title: 'Prompt',
-    titleKm: 'ប្រាប់ AI',
-    text: 'Describe the website you want, in plain words. English or Khmer.',
-    textKm: 'ពិពណ៌នាគេហទំព័រដែលអ្នកចង់បាន ជាពាក្យសាមញ្ញ។ ភាសាអង់គ្លេស ឬភាសាខ្មែរក៏បាន។',
-  },
-  {
-    icon: '🔁',
-    title: 'Iterate',
-    titleKm: 'កែលម្អម្តងហើយម្តងទៀត',
-    text: 'Check the result and tell the AI what to improve. Repeat! This is the real skill.',
-    textKm: 'ពិនិត្យលទ្ធផល ហើយប្រាប់ AI ពីអ្វីដែលត្រូវកែ។ ធ្វើម្តងទៀត! នេះគឺជាជំនាញពិតប្រាកដ។',
-  },
-  {
-    icon: '🚀',
-    title: 'Ship it',
-    titleKm: 'ដាក់ឱ្យប្រើ',
-    text: 'Publish it to the internet, free, at a link you can share.',
-    textKm: 'ដាក់វានៅលើអ៊ីនធឺណិត ដោយឥតគិតថ្លៃ ជាមួយតំណភ្ជាប់ដែលអ្នកអាចចែករំលែកបាន។',
+    icon: '🦶',
+    title: 'Foot nails',
+    titleKm: 'ក្រចកជើង',
+    items: [
+      { name: 'Basic Pedicure', nameKm: 'ថែក្រចកជើងធម្មតា', price: '$4' },
+      { name: 'Regular Toenail Polish', nameKm: 'លាបថ្នាំក្រចកជើងធម្មតា', price: '$3' },
+      { name: 'Gel Toenail Polish', nameKm: 'លាបថ្នាំជែលក្រចកជើង', price: '$5' },
+      { name: 'Gel Polish Removal', nameKm: 'លុបថ្នាំជែល', price: '$2' },
+      { name: 'French Toenail Design', nameKm: 'រចនាក្រចកជើងបែបបារាំង', price: '$7' },
+      { name: 'Simple Toenail Art', nameKm: 'គំនូរក្រចកជើងសាមញ្ញ', price: '$1–3', extra: true },
+      { name: 'Foot Spa + Pedicure', nameKm: 'ស្ប៉ាជើង + ថែក្រចកជើង', price: '$8–12' },
+      { name: 'Foot Scrub + Massage', nameKm: 'ដុសស្បែកជើង + ម៉ាស្សា', price: '$5–8' },
+    ],
   },
 ];
 
-const stats = [
-  { value: '0', label: 'lines of code to memorize', labelKm: 'បន្ទាត់កូដដែលត្រូវទន្ទេញ' },
-  { value: '1', label: 'live website each', labelKm: 'គេហទំព័រផ្ទាល់ខ្លួនម្នាក់មួយ' },
-  { value: '$0', label: 'to publish it', labelKm: 'ដើម្បីដាក់វាលើអ៊ីនធឺណិត' },
-];
-
-const needs = [
-  {
-    title: 'An idea',
-    titleKm: 'គំនិតមួយ',
-    text: 'A business, a project, a club — anything you would want a website for.',
-    textKm: 'អាជីវកម្ម គម្រោង ក្លឹប — អ្វីក៏បានដែលអ្នកចង់មានគេហទំព័រ។',
-  },
-  {
-    title: 'A computer',
-    titleKm: 'កុំព្យូទ័រមួយ',
-    text: 'Mac or Windows. You will set it up yourself, with the AI as your guide.',
-    textKm: 'Mac ឬ Windows។ អ្នកនឹងរៀបចំវាដោយខ្លួនឯង ដោយមាន AI ជាអ្នកណែនាំ។',
-  },
-  {
-    title: 'A GitHub account',
-    titleKm: 'គណនី GitHub',
-    text: 'Free. This is where your website’s files are kept safe. We make it together on Day 1.',
-    textKm: 'ឥតគិតថ្លៃ។ ជាកន្លែងរក្សាទុកឯកសារគេហទំព័ររបស់អ្នកដោយសុវត្ថិភាព។ យើងបង្កើតវាជាមួយគ្នានៅថ្ងៃទី ១។',
-  },
-  {
-    title: 'A Cloudflare account',
-    titleKm: 'គណនី Cloudflare',
-    text: 'Free. This puts your website on the internet.',
-    textKm: 'ឥតគិតថ្លៃ។ វាដាក់គេហទំព័ររបស់អ្នកនៅលើអ៊ីនធឺណិត។',
-  },
-];
-
-const faqs = [
-  {
-    q: 'Do I need to know how to code?',
-    qKm: 'តើខ្ញុំត្រូវចេះសរសេរកូដទេ?',
-    a: 'No. You will see some code, and you will learn what it is, but the AI writes it. Your job is to know what you want and to say it clearly.',
-    aKm: 'ទេ។ អ្នកនឹងឃើញកូដខ្លះ ហើយនឹងរៀនថាវាជាអ្វី ប៉ុន្តែ AI ជាអ្នកសរសេរវា។ ការងាររបស់អ្នក គឺដឹងថាអ្នកចង់បានអ្វី ហើយនិយាយវាឱ្យបានច្បាស់។',
-  },
-  {
-    q: 'Can my website be in Khmer?',
-    qKm: 'តើគេហទំព័ររបស់ខ្ញុំអាចជាភាសាខ្មែរបានទេ?',
-    a: 'Yes. You can ask the AI to write in Khmer, or to make the site in both languages. Always have a Khmer speaker check the words — you know the language better than the AI does.',
-    aKm: 'បាន។ អ្នកអាចប្រាប់ AI ឱ្យសរសេរជាភាសាខ្មែរ ឬធ្វើគេហទំព័រជាពីរភាសា។ តែងតែឱ្យអ្នកចេះភាសាខ្មែរពិនិត្យពាក្យពេចន៍ — អ្នកស្គាល់ភាសានេះច្បាស់ជាង AI។',
-  },
-  {
-    q: 'Do I keep my website after the workshop?',
-    qKm: 'តើខ្ញុំនៅតែមានគេហទំព័ររបស់ខ្ញុំក្រោយវគ្គសិក្សាទេ?',
-    a: 'Yes. Everything is in your own GitHub and Cloudflare accounts. It is yours, and it stays online.',
-    aKm: 'បាទ/ចាស។ អ្វីៗទាំងអស់នៅក្នុងគណនី GitHub និង Cloudflare ផ្ទាល់ខ្លួនរបស់អ្នក។ វាជារបស់អ្នក ហើយវានៅតែដំណើរការលើអ៊ីនធឺណិត។',
-  },
-  {
-    q: 'What if the AI makes a mistake?',
-    qKm: 'ចុះបើ AI ធ្វើខុស?',
-    a: 'It will! Tell it what is wrong, the same way you would tell a person. If things get really messy, you can always go back to an earlier version.',
-    aKm: 'វានឹងធ្វើខុសម្តងម្កាល! ប្រាប់វាថាអ្វីខុស ដូចដែលអ្នកប្រាប់មនុស្សម្នាក់។ ប្រសិនបើអ្វីៗរញ៉េរញ៉ៃខ្លាំង អ្នកតែងតែអាចត្រឡប់ទៅកំណែមុនវិញបាន។',
-  },
-];
-
-const decks = getDecks();
-
-// The "Get started" prompt that students copy into Claude. Each block is one
-// paragraph; the copy buttons join them with blank lines.
-const starterPrompt = [
-  {
-    en: 'I’m a student in Cambodia, learning to use Claude Code to build software. My instructor gave me this message to start with.',
-    km: 'ខ្ញុំជាសិស្សនៅកម្ពុជា កំពុងរៀនប្រើ Claude Code ដើម្បីបង្កើតកម្មវិធី។ គ្រូរបស់ខ្ញុំបានផ្តល់សារនេះឱ្យខ្ញុំ សម្រាប់ចាប់ផ្តើម។',
-  },
-  {
-    en: 'Please don’t assume I know anything about programming, or that I speak English well. Use short, simple English, and add a Khmer translation under your messages. If I write in Khmer, reply in Khmer.',
-    km: 'សូមកុំសន្មតថាខ្ញុំចេះអ្វីអំពីការសរសេរកម្មវិធី ឬថាខ្ញុំចេះភាសាអង់គ្លេសច្បាស់។ សូមប្រើភាសាអង់គ្លេសខ្លីៗ និងសាមញ្ញ ហើយបន្ថែមការបកប្រែជាភាសាខ្មែរនៅក្រោមសាររបស់អ្នក។ ប្រសិនបើខ្ញុំសរសេរជាភាសាខ្មែរ សូមឆ្លើយជាភាសាខ្មែរ។',
-  },
-  {
-    en: 'My instructor made the GitHub template repo teamdandelion/vibe-code-cambodia to help me get started. Please help me, one step at a time:',
-    km: 'គ្រូរបស់ខ្ញុំបានបង្កើត GitHub template repo teamdandelion/vibe-code-cambodia ដើម្បីជួយខ្ញុំចាប់ផ្តើម។ សូមជួយខ្ញុំ ម្តងមួយជំហាន៖',
-  },
-  {
-    en: '1. Set up my computer for software development. It may be a Mac or Windows. (The repo has guides in docs/mac-setup.md and docs/windows-setup.md.)\n2. Make a GitHub account if I don’t have one, and connect it to this computer.\n3. Make my own repo from the template, and get the website running on my computer.\n4. Help me turn it into my own website.',
-    km: '១. រៀបចំកុំព្យូទ័ររបស់ខ្ញុំសម្រាប់ការអភិវឌ្ឍកម្មវិធី។ វាអាចជា Mac ឬ Windows។ (repo មានការណែនាំនៅក្នុង docs/mac-setup.md និង docs/windows-setup.md។)\n២. បង្កើតគណនី GitHub ប្រសិនបើខ្ញុំមិនទាន់មាន ហើយភ្ជាប់វាទៅកុំព្យូទ័រនេះ។\n៣. បង្កើត repo ផ្ទាល់ខ្លួនរបស់ខ្ញុំពី template ហើយធ្វើឱ្យគេហទំព័រដំណើរការនៅលើកុំព្យូទ័ររបស់ខ្ញុំ។\n៤. ជួយខ្ញុំប្តូរវាឱ្យក្លាយជាគេហទំព័រផ្ទាល់ខ្លួនរបស់ខ្ញុំ។',
-  },
-  {
-    en: 'Ask me questions to find out what I’d like to build, and work with me. Explain each step before you do it, and wait for me when I need to do something myself.',
-    km: 'សួរខ្ញុំសំណួរ ដើម្បីដឹងថាខ្ញុំចង់បង្កើតអ្វី ហើយធ្វើការជាមួយខ្ញុំ។ ពន្យល់ជំហាននីមួយៗ មុនពេលអ្នកធ្វើវា ហើយរង់ចាំខ្ញុំ នៅពេលខ្ញុំត្រូវធ្វើអ្វីមួយដោយខ្លួនឯង។',
-  },
-];
-const promptEn = starterPrompt.map((b) => b.en).join('\n\n');
-const promptKm = starterPrompt.map((b) => b.km).join('\n\n');
-
-const startSteps = [
-  {
-    text: 'Install the Claude app and sign in. On Windows, install Git first.',
-    km: 'ដំឡើងកម្មវិធី Claude ហើយចូលគណនី។ នៅលើ Windows សូមដំឡើង Git ជាមុនសិន។',
-    link: { href: '/setup', label: 'How?', labelKm: 'ធ្វើដូចម្តេច?' },
-  },
-  {
-    text: 'Open the Code tab.',
-    km: 'បើកផ្ទាំង Code។',
-  },
-  { text: 'Copy this message, paste it in, and press Enter.', km: 'ចម្លងសារនេះ បិទភ្ជាប់វា ហើយចុច Enter។' },
+const gallery = [
+  { src: '/images/nails-gold.jpg', alt: 'Long almond nails with gold foil edges and glitter', label: 'Gold Design' },
+  { src: '/images/nails-navy.jpg', alt: 'Navy and white nails with stars and polka dots', label: 'Nail Art' },
 ];
 ---
 
 <Base>
   <Header />
-
   <main>
-    <!-- HERO -->
+    <!-- Hero -->
     <section class="relative overflow-hidden">
-      <div class="pointer-events-none absolute -top-40 -right-40 size-[36rem] rounded-full bg-sun/25 blur-3xl"></div>
-      <div class="pointer-events-none absolute -bottom-40 -left-40 size-[30rem] rounded-full bg-brand/15 blur-3xl"></div>
-
-      <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-2">
-        <div>
-          <p class="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/70 px-3 py-1 text-sm font-medium">
-            <span class="size-2 rounded-full bg-leaf"></span>
-            A vibe coding workshop at New Hope Cambodia
-          </p>
-          <h1 class="mt-6 font-display text-5xl leading-[1.02] font-extrabold tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            Build a real website by <span class="text-brand">talking</span> to AI.
+      <div class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-leaf/70 blur-3xl"></div>
+      <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-16 sm:px-6 sm:pt-20 lg:grid-cols-2">
+        <div class="text-center lg:text-left">
+          <p class="text-sm font-semibold tracking-[0.35em] text-sun">SIEM REAP · CAMBODIA</p>
+          <h1 class="mt-4 font-display text-6xl font-extrabold tracking-tight text-brand sm:text-8xl">
+            SORÉ
+            <span class="mt-1 block text-2xl font-semibold tracking-[0.6em] sm:text-3xl">NAILS</span>
           </h1>
-          <p lang="km" class="mt-4 text-xl text-ink/70">បង្កើតគេហទំព័រជាមួយ AI</p>
-          <p class="mt-6 max-w-xl text-lg text-muted">
-            No coding experience needed. Describe the website you want, watch the AI build it, and publish it to the internet by the end of the week.
-            <span class="km" lang="km">មិនចាំបាច់មានបទពិសោធន៍សរសេរកូដទេ។ ពិពណ៌នាគេហទំព័រដែលអ្នកចង់បាន មើល AI បង្កើតវា ហើយដាក់វានៅលើអ៊ីនធឺណិតត្រឹមចុងសប្តាហ៍។</span>
+          <p class="mt-6 text-xl text-ink sm:text-2xl">
+            Modern &amp; elegant nail art.
+            <span class="km" lang="km">ការរចនាក្រចក ទំនើប និងប្រណីត។</span>
           </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#start" class="rounded-full bg-brand px-6 py-3 font-semibold text-paper shadow-lg shadow-brand/25 transition hover:bg-brand-dark">
-              Get started ↓ <span lang="km" class="font-khmer font-normal opacity-80">ចាប់ផ្តើម</span>
+          <div class="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <a href={site.phoneLink} class="rounded-full bg-sun px-6 py-3 font-semibold text-white hover:bg-brand">
+              📞 Call {site.phone}
             </a>
-            <a href="/lesson" class="rounded-full border border-ink/15 bg-white px-6 py-3 font-semibold transition hover:border-ink/40">
-              See the lessons → <span lang="km" class="font-khmer font-normal opacity-60">មេរៀន</span>
+            <a href="#prices" class="rounded-full bg-white px-6 py-3 font-semibold ring-1 ring-ink/10 hover:bg-brand hover:text-paper">
+              See prices <span lang="km" class="font-khmer font-normal">មើលតម្លៃ</span>
             </a>
           </div>
+          <p class="mt-5 text-sm text-muted">
+            🕗 {site.hours}
+            <span class="km" lang="km">{site.hoursKm}</span>
+          </p>
         </div>
 
-        <!-- Illustration: a prompt on the left becomes a website on the right -->
-        <div class="relative" aria-hidden="true">
-          <div class="rounded-2xl bg-ink p-5 font-mono text-sm text-paper shadow-2xl">
-            <div class="mb-4 flex gap-1.5">
-              <span class="size-3 rounded-full bg-brand"></span>
-              <span class="size-3 rounded-full bg-sun"></span>
-              <span class="size-3 rounded-full bg-leaf"></span>
-            </div>
-            <p class="text-sun">&gt; Make a website for my family's bakery in Phnom Penh.</p>
-            <p class="mt-1 text-sun">&nbsp;&nbsp;Warm colors, our menu, and a map.</p>
-            <p class="mt-3 text-paper/60">✓ Created homepage</p>
-            <p class="text-paper/60">✓ Added menu with 6 items</p>
-            <p class="text-paper/60">✓ Added map and opening hours</p>
-            <p class="mt-3 animate-pulse">▍</p>
+        <!-- Two photos in arch frames -->
+        <div class="relative mx-auto flex w-full max-w-md justify-center gap-4">
+          <div class="aspect-[3/4] w-1/2 -rotate-3 overflow-hidden rounded-t-full rounded-b-2xl border-4 border-white shadow-xl ring-1 ring-sun">
+            <img src="/images/nails-gold.jpg" alt="Long almond nails with gold foil edges and glitter" class="size-full object-cover" />
           </div>
-          <div class="relative -mt-6 mr-2 ml-auto w-60 rotate-[3deg] rounded-xl border border-ink/10 bg-white p-4 shadow-xl sm:w-72">
-            <div class="h-20 rounded-lg bg-gradient-to-br from-sun to-brand"></div>
-            <p class="mt-3 font-display font-bold">Sokha's Bakery</p>
-            <p class="text-xs text-muted">Fresh bread every morning since 1998</p>
-            <div class="mt-3 grid grid-cols-3 gap-2">
-              <div class="h-8 rounded bg-paper"></div>
-              <div class="h-8 rounded bg-paper"></div>
-              <div class="h-8 rounded bg-paper"></div>
-            </div>
+          <div class="mt-10 aspect-[3/4] w-1/2 rotate-3 overflow-hidden rounded-t-full rounded-b-2xl border-4 border-white shadow-xl ring-1 ring-sun">
+            <img src="/images/nails-navy.jpg" alt="Navy and white nails with stars and polka dots" class="size-full object-cover" />
           </div>
         </div>
       </div>
     </section>
 
-    <!-- GET STARTED: the message students paste into Claude -->
-    <section id="start" class="scroll-mt-20 border-t border-ink/10 bg-white">
-      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[1fr_1.5fr]">
-        <div>
-          <p class="font-semibold text-brand">Get started <span lang="km" class="font-khmer font-normal">· ចាប់ផ្តើម</span></p>
-          <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Send this message to Claude.</h2>
-          <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">ផ្ញើសារនេះទៅ Claude។</p>
-          <p class="mt-4 text-lg text-muted">
-            Claude will help you set up your computer and build your website, one step at a time.
-            <span class="km" lang="km">Claude នឹងជួយអ្នករៀបចំកុំព្យូទ័រ និងបង្កើតគេហទំព័ររបស់អ្នក ម្តងមួយជំហាន។</span>
-          </p>
-          <ol class="mt-8 space-y-4">
-            {
-              startSteps.map((step, i) => (
-                <li class="flex gap-4">
-                  <span class="grid size-8 shrink-0 place-items-center rounded-full bg-brand font-display font-bold text-paper">{i + 1}</span>
-                  <p class="pt-1">
-                    {step.text}{' '}
-                    {step.link && (
-                      <a href={step.link.href} class="font-semibold text-brand underline underline-offset-2">
-                        {step.link.label} <span lang="km" class="font-khmer font-normal">{step.link.labelKm}</span>
-                      </a>
-                    )}
-                    <span class="km text-muted" lang="km">{step.km}</span>
-                  </p>
-                </li>
-              ))
-            }
-          </ol>
-        </div>
-
-        <div class="relative rounded-2xl border-l-4 border-sun bg-paper p-5 pt-16 shadow-xl shadow-ink/5 sm:p-8 sm:pt-16">
-          <div class="absolute top-4 right-4 left-4 flex flex-wrap justify-end gap-2 sm:left-auto">
-            <button type="button" class="prompt-copy rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-paper transition hover:bg-brand-dark" data-copy={promptEn}>
-              Copy message
-            </button>
-            <button type="button" lang="km" class="prompt-copy rounded-full border border-brand px-4 py-1.5 font-khmer text-sm font-semibold text-brand transition hover:bg-brand hover:text-paper" data-copy={promptKm}>
-              ចម្លងជាភាសាខ្មែរ
-            </button>
-          </div>
+    <!-- Prices -->
+    <section id="prices" class="scroll-mt-20 bg-white/60 py-16">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 class="text-center font-display text-3xl font-bold text-brand sm:text-4xl">
+          Prices
+          <span class="km" lang="km">តម្លៃ</span>
+        </h2>
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
           {
-            starterPrompt.map((block) => (
-              <p class="mb-4 whitespace-pre-line last:mb-0">
-                {block.en}
-                <span class="km text-muted whitespace-pre-line" lang="km">{block.km}</span>
-              </p>
-            ))
-          }
-        </div>
-      </div>
-    </section>
-
-    <!-- STATS -->
-    <section class="border-y border-ink/10 bg-white">
-      <dl class="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
-        {
-          stats.map((s) => (
-            <div>
-              <dt class="sr-only">{s.label}</dt>
-              <dd class="font-display text-4xl font-extrabold text-brand">{s.value}</dd>
-              <dd class="mt-1 text-sm text-muted">
-                {s.label}
-                <span class="km" lang="km">{s.labelKm}</span>
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section id="how" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
-      <p class="font-semibold text-brand">How it works <span lang="km" class="font-khmer font-normal">· របៀបដំណើរការ</span></p>
-      <h2 class="mt-2 max-w-2xl font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-        Four steps from idea to live website.
-      </h2>
-      <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">បួនជំហាន ពីគំនិតមួយ ទៅជាគេហទំព័រដែលដំណើរការពិតប្រាកដ។</p>
-      <ol class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          steps.map((s, i) => (
-            <li class="rounded-2xl border border-ink/10 bg-white p-6">
-              <div class="flex items-center justify-between">
-                <span class="text-3xl">{s.icon}</span>
-                <span class="font-display text-sm font-bold text-ink/30">0{i + 1}</span>
-              </div>
-              <h3 class="mt-4 font-display text-xl font-bold">
-                {s.title}
-                <span class="km text-base" lang="km">{s.titleKm}</span>
-              </h3>
-              <p class="mt-2 text-muted">
-                {s.text}
-                <span class="km" lang="km">{s.textKm}</span>
-              </p>
-            </li>
-          ))
-        }
-      </ol>
-    </section>
-
-    <!-- BIG STATEMENT -->
-    <section class="bg-ink text-paper">
-      <div class="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6 sm:py-28">
-        <p class="font-display text-3xl leading-tight font-bold text-balance sm:text-5xl">
-          AI turns out to be <span class="text-sun">very good at writing code.</span> So the most useful skill now is knowing what to ask for.
-        </p>
-        <p lang="km" class="km mt-6 text-xl sm:text-2xl">
-          AI ពិតជាពូកែសរសេរកូដណាស់។ ដូច្នេះ ជំនាញដែលមានប្រយោជន៍បំផុតនាពេលនេះ គឺការដឹងថាត្រូវស្នើសុំអ្វី។
-        </p>
-      </div>
-    </section>
-
-    <!-- LESSONS -->
-    <section id="lessons" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
-      <p class="font-semibold text-brand">Lessons <span lang="km" class="font-khmer font-normal">· មេរៀន</span></p>
-      <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Start here.</h2>
-      <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">ចាប់ផ្តើមនៅទីនេះ។</p>
-      <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {
-          decks.map((deck) => (
-            <a
-              href={`/lesson/${deck.slug}`}
-              class="group flex flex-col rounded-2xl border border-ink/10 bg-white p-6 transition hover:-translate-y-1 hover:border-brand hover:shadow-xl"
-            >
-              <span class="font-display text-sm font-bold tracking-wide text-brand uppercase">{deck.eyebrow}</span>
-              <span class="mt-2 font-display text-2xl font-bold">
-                {deck.title.replace(/^[^—]+—\s*/, '')}
-                {deck.titleKm && <span class="km text-lg" lang="km">{deck.titleKm.replace(/^[^—]+—\s*/, '')}</span>}
-              </span>
-              <span class="mt-2 flex-1 text-muted">
-                {deck.subtitle}
-                {deck.subtitleKm && <span class="km" lang="km">{deck.subtitleKm}</span>}
-              </span>
-              <span class="mt-6 font-semibold text-brand">Open slides <span class="inline-block transition group-hover:translate-x-1">→</span> <span lang="km" class="font-khmer font-normal">បើកស្លាយ</span></span>
-            </a>
-          ))
-        }
-        <a
-          href="/setup"
-          class="group flex flex-col rounded-2xl border border-ink/10 bg-white p-6 transition hover:-translate-y-1 hover:border-brand hover:shadow-xl"
-        >
-          <span class="font-display text-sm font-bold tracking-wide text-brand uppercase">Guide</span>
-          <span class="mt-2 font-display text-2xl font-bold">
-            Set up your computer
-            <span class="km text-lg" lang="km">រៀបចំកុំព្យូទ័ររបស់អ្នក</span>
-          </span>
-          <span class="mt-2 flex-1 text-muted">
-            Install the Claude app, then let the AI set up the rest of your computer.
-            <span class="km" lang="km">ដំឡើងកម្មវិធី Claude បន្ទាប់មកឱ្យ AI រៀបចំផ្នែកផ្សេងទៀតនៃកុំព្យូទ័ររបស់អ្នក។</span>
-          </span>
-          <span class="mt-6 font-semibold text-brand">Open the guide <span class="inline-block transition group-hover:translate-x-1">→</span> <span lang="km" class="font-khmer font-normal">បើកការណែនាំ</span></span>
-        </a>
-      </div>
-    </section>
-
-    <!-- WHAT YOU NEED -->
-    <section class="bg-white">
-      <div class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[1fr_1.4fr]">
-        <div>
-          <p class="font-semibold text-brand">Before you start <span lang="km" class="font-khmer font-normal">· មុនពេលចាប់ផ្តើម</span></p>
-          <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">What you need</h2>
-          <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">អ្វីដែលអ្នកត្រូវការ</p>
-          <p class="mt-4 text-lg text-muted">
-            That's the whole list. Everything else, the AI will help you install.
-            <span class="km" lang="km">នោះហើយជាបញ្ជីទាំងមូល។ អ្វីៗផ្សេងទៀត AI នឹងជួយអ្នកដំឡើង។</span>
-          </p>
-        </div>
-        <ul class="grid gap-4 sm:grid-cols-2">
-          {
-            needs.map((n) => (
-              <li class="rounded-2xl bg-paper p-6">
-                <span class="grid size-8 place-items-center rounded-full bg-leaf text-sm font-bold text-paper">✓</span>
-                <h3 class="mt-4 font-display text-lg font-bold">
-                  {n.title}
-                  <span class="km text-base" lang="km">{n.titleKm}</span>
+            priceLists.map((list) => (
+              <div class="rounded-3xl bg-paper p-6 ring-1 ring-sun/30 sm:p-8">
+                <h3 class="flex items-center gap-3 font-display text-2xl font-bold text-brand">
+                  <span class="text-3xl">{list.icon}</span>
+                  <span>
+                    {list.title}
+                    <span class="km" lang="km">{list.titleKm}</span>
+                  </span>
                 </h3>
-                <p class="mt-1 text-muted">
-                  {n.text}
-                  <span class="km" lang="km">{n.textKm}</span>
-                </p>
-              </li>
+                <ul class="mt-6 divide-y divide-dashed divide-sun/40">
+                  {list.items.map((item) => (
+                    <li class="flex items-start justify-between gap-4 py-3">
+                      <span>
+                        <span class="font-semibold">{item.name}</span>
+                        <span class="km text-muted" lang="km">{item.nameKm}</span>
+                      </span>
+                      <span class="shrink-0 text-right">
+                        <span class="font-display text-xl font-extrabold text-sun">
+                          {item.extra && '+'}{item.price}
+                        </span>
+                        {item.extra && (
+                          <span class="block text-xs text-muted">
+                            extra · <span lang="km">បន្ថែម</span>
+                          </span>
+                        )}
+                        {item.per && (
+                          <span class="block text-xs text-muted">
+                            per {item.per} · <span lang="km">ក្នុងមួយ{item.perKm}</span>
+                          </span>
+                        )}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))
           }
-        </ul>
+        </div>
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section class="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28">
-      <h2 class="text-center font-display text-4xl font-extrabold tracking-tight">Questions</h2>
-      <p class="km mt-2 text-center text-xl font-semibold" lang="km">សំណួរ</p>
-      <div class="mt-10 divide-y divide-ink/10 border-y border-ink/10">
-        {
-          faqs.map((f) => (
-            <details class="group py-5">
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold">
-                <span>
-                  {f.q}
-                  <span class="km text-base" lang="km">{f.qKm}</span>
-                </span>
-                <span class="text-2xl text-brand transition group-open:rotate-45">+</span>
-              </summary>
-              <p class="mt-3 text-muted">
-                {f.a}
-                <span class="km" lang="km">{f.aKm}</span>
-              </p>
-            </details>
-          ))
-        }
+    <!-- Gallery -->
+    <section id="gallery" class="scroll-mt-20 py-16">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 class="text-center font-display text-3xl font-bold text-brand sm:text-4xl">
+          Our work
+          <span class="km" lang="km">ស្នាដៃរបស់យើង</span>
+        </h2>
+        <div class="mx-auto mt-10 grid max-w-3xl gap-6 sm:grid-cols-2">
+          {
+            gallery.map((g) => (
+              <figure class="overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-ink/5">
+                <img src={g.src} alt={g.alt} class="aspect-[4/5] w-full object-cover" loading="lazy" />
+                <figcaption class="px-5 py-3 text-center font-semibold text-brand">{g.label}</figcaption>
+              </figure>
+            ))
+          }
+        </div>
       </div>
     </section>
 
-    <!-- CALL TO ACTION -->
-    <section class="px-4 pb-20 sm:px-6">
-      <div class="mx-auto max-w-6xl rounded-3xl bg-brand px-6 py-16 text-center text-paper sm:py-20">
-        <h2 class="font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Ready? Let's build something.</h2>
-        <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">រួចរាល់ហើយឬនៅ? តោះបង្កើតអ្វីមួយ។</p>
-        <a href="/lesson/day-1" class="mt-8 inline-block rounded-full bg-paper px-8 py-4 font-semibold text-ink transition hover:bg-sun">
-          Start with Day 1 → <span lang="km" class="font-khmer font-normal">ចាប់ផ្តើមថ្ងៃទី ១</span>
-        </a>
+    <!-- Booking form. A static site can't send messages by itself, so the form
+         writes the booking as a message, and the customer sends it to us on
+         Telegram or by SMS. -->
+    <section id="book" class="scroll-mt-20 bg-white/60 py-16">
+      <div class="mx-auto max-w-2xl px-4 sm:px-6">
+        <h2 class="text-center font-display text-3xl font-bold text-brand sm:text-4xl">
+          Book online
+          <span class="km" lang="km">កក់តាមអនឡាញ</span>
+        </h2>
+        <p class="mt-3 text-center text-muted">
+          Answer a few questions. Then send them to us on Telegram or by SMS.
+          <span class="km" lang="km">ឆ្លើយសំណួរពីរបី។ បន្ទាប់មក ផ្ញើវាមកយើងតាម Telegram ឬ SMS។</span>
+        </p>
+
+        <form id="booking" class="mt-8 grid gap-5 rounded-3xl bg-paper p-6 ring-1 ring-sun/30 sm:grid-cols-2 sm:p-8">
+          <label class="block">
+            <span class="font-semibold">Your name <span class="km text-muted" lang="km">ឈ្មោះរបស់អ្នក</span></span>
+            <input name="name" required autocomplete="name" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block">
+            <span class="font-semibold">Your phone <span class="km text-muted" lang="km">លេខទូរសព្ទរបស់អ្នក</span></span>
+            <input name="phone" type="tel" required autocomplete="tel" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block sm:col-span-2">
+            <span class="font-semibold">Which service? <span class="km text-muted" lang="km">សេវាកម្មណា?</span></span>
+            <select name="service" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3">
+              <option value="">Choose… / ជ្រើសរើស…</option>
+              {
+                priceLists.map((list) => (
+                  <optgroup label={`${list.title} · ${list.titleKm}`}>
+                    {list.items.map((item) => (
+                      <option value={`${item.name} (${list.title})`}>
+                        {item.name} — {item.extra ? '+' : ''}{item.price}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))
+              }
+            </select>
+          </label>
+          <label class="block">
+            <span class="font-semibold">Date <span class="km text-muted" lang="km">ថ្ងៃ</span></span>
+            <input name="date" type="date" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block">
+            <span class="font-semibold">Time <span class="km text-muted" lang="km">ម៉ោង</span></span>
+            <input name="time" type="time" min="08:00" max="20:30" step="1800" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <label class="block">
+            <span class="font-semibold">How many people? <span class="km text-muted" lang="km">ប៉ុន្មាននាក់?</span></span>
+            <input name="people" type="number" min="1" max="10" value="1" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+          </label>
+          <fieldset>
+            <legend class="font-semibold">First time here? <span class="km text-muted" lang="km">មកលើកដំបូង?</span></legend>
+            <div class="mt-3 flex gap-5">
+              <label class="flex items-center gap-2"><input type="radio" name="first" value="Yes" /> Yes / បាទ·ចាស</label>
+              <label class="flex items-center gap-2"><input type="radio" name="first" value="No" checked /> No / ទេ</label>
+            </div>
+          </fieldset>
+          <label class="block sm:col-span-2">
+            <span class="font-semibold">Color or design idea? <span class="km text-muted" lang="km">ពណ៌ ឬគំនិតរចនា?</span></span>
+            <textarea name="notes" rows="3" placeholder="e.g. pink gel with gold stars" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3"></textarea>
+          </label>
+
+          <div class="grid gap-3 sm:col-span-2 sm:grid-cols-2">
+            <button type="button" data-send="telegram" class="rounded-full bg-[#229ED9] px-6 py-3 font-semibold text-white hover:opacity-90">
+              ✈️ Send on Telegram
+            </button>
+            <button type="button" data-send="sms" class="rounded-full bg-brand px-6 py-3 font-semibold text-paper hover:bg-brand-dark">
+              💬 Send by SMS
+            </button>
+          </div>
+          <p id="booking-note" class="hidden rounded-xl bg-leaf/50 p-4 text-sm sm:col-span-2"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Contact and visit -->
+    <section id="visit" class="scroll-mt-20 bg-brand py-16 text-paper">
+      <div class="mx-auto grid max-w-5xl items-center gap-10 px-4 sm:px-6 md:grid-cols-[1fr_auto]">
+        <div>
+          <h2 class="font-display text-3xl font-bold sm:text-4xl">
+            Contact &amp; visit
+            <span class="km" lang="km">ទំនាក់ទំនង និងមកលេង</span>
+          </h2>
+          <ul class="mt-8 space-y-5 text-lg">
+            <li>
+              <a href={site.phoneLink} class="flex items-start gap-4 hover:text-sun">
+                <span class="text-2xl">📞</span>
+                <span><b>{site.phone}</b> <span class="km text-paper/70" lang="km">ទូរសព្ទមកកក់</span></span>
+              </a>
+            </li>
+            <li>
+              <a href={site.telegram} class="flex items-start gap-4 hover:text-sun" target="_blank" rel="noopener">
+                <span class="text-2xl">✈️</span>
+                <span><b>Telegram: {site.telegramName}</b> <span class="km text-paper/70" lang="km">ផ្ញើសារមកយើងតាម Telegram</span></span>
+              </a>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="text-2xl">💬</span>
+              <span>
+                <b>Facebook:</b>
+                {site.facebook.map((fb, i) => (
+                  <>
+                    {i > 0 && <span class="text-paper/50"> or </span>}
+                    <a href={fb.link} class="font-bold underline underline-offset-4 hover:text-sun" target="_blank" rel="noopener">{fb.name}</a>
+                  </>
+                ))}
+                <span class="km text-paper/70" lang="km">ផ្ញើសារមកយើងតាម Facebook</span>
+              </span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="text-2xl">📍</span>
+              <span><b>{site.location}</b> <span class="km text-paper/70" lang="km">{site.locationKm}</span></span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="text-2xl">🕗</span>
+              <span><b>{site.hours}</b> <span class="km text-paper/70" lang="km">{site.hoursKm}</span></span>
+            </li>
+          </ul>
+          <p class="mt-8 inline-block rounded-full border border-sun px-5 py-2 text-sm font-semibold tracking-widest text-sun">
+            WALK-INS WELCOME
+          </p>
+        </div>
+
+        <!-- KHQR payment code -->
+        <div class="mx-auto text-center">
+          <img src="/images/khqr.png" alt="KHQR code to pay SORÉ Nails" class="w-52 rounded-2xl ring-4 ring-sun" loading="lazy" />
+          <p class="mt-3 text-sm font-semibold tracking-widest text-sun">SCAN TO PAY</p>
+          <p class="km text-paper/70" lang="km">ស្កេនដើម្បីបង់ប្រាក់</p>
+        </div>
       </div>
     </section>
   </main>
-
   <Footer />
 </Base>
 
-<script>
-  // "Copy message" buttons on the Get started prompt.
-  for (const button of document.querySelectorAll<HTMLButtonElement>('.prompt-copy')) {
-    const label = button.textContent;
-    button.addEventListener('click', async () => {
-      const text = button.dataset.copy ?? '';
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch {
-        // Older browsers: copy through a hidden text box instead.
-        const box = document.createElement('textarea');
-        box.value = text;
-        document.body.append(box);
-        box.select();
-        document.execCommand('copy');
-        box.remove();
-      }
-      button.textContent = button.lang === 'km' ? 'បានចម្លង ✓' : 'Copied ✓';
-      setTimeout(() => (button.textContent = label), 2000);
-    });
+<script define:vars={{ telegram: site.telegram, sms: site.smsLink }}>
+  // Turns the booking answers into one message, then opens Telegram or SMS
+  // so the customer can send it to us.
+  const form = document.getElementById('booking');
+  const note = document.getElementById('booking-note');
+
+  function bookingMessage() {
+    const d = new FormData(form);
+    return [
+      'Hello SORÉ Nails! I want to book:',
+      `Name: ${d.get('name')}`,
+      `Phone: ${d.get('phone')}`,
+      `Service: ${d.get('service')}`,
+      `Date: ${d.get('date')}`,
+      `Time: ${d.get('time')}`,
+      `People: ${d.get('people')}`,
+      `First time: ${d.get('first')}`,
+      d.get('notes') ? `Idea: ${d.get('notes')}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n');
   }
+
+  form.querySelectorAll('button[data-send]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!form.reportValidity()) return;
+      const msg = bookingMessage();
+
+      if (btn.dataset.send === 'sms') {
+        window.location.href = `${sms}?&body=${encodeURIComponent(msg)}`;
+        return;
+      }
+
+      // Telegram can't fill in a message for a person, so we copy it first.
+      try {
+        await navigator.clipboard.writeText(msg);
+        note.innerHTML =
+          '✅ Your booking is copied. In Telegram, <b>paste it</b> and press send.<br><span lang="km">✅ ការកក់របស់អ្នកត្រូវបានចម្លង។ នៅក្នុង Telegram សូម<b>បិទភ្ជាប់</b> ហើយចុចផ្ញើ។</span>';
+      } catch {
+        note.textContent = 'Copy this message and send it to us on Telegram:\n\n' + msg;
+        note.style.whiteSpace = 'pre-line';
+      }
+      note.classList.remove('hidden');
+      window.open(telegram, '_blank');
+    });
+  });
 </script>
