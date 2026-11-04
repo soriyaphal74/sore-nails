@@ -1,0 +1,55 @@
+---
+// The SORÉ Nails round logo: a gold ring, a small crown, the name in
+// script letters, and a lotus. It is drawn with SVG, so it stays sharp at
+// any size. Use it like <Logo class="w-72" />.
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<svg viewBox="0 0 400 400" class={className} role="img" aria-label="SORÉ Nails logo">
+  <defs>
+    <linearGradient id="logo-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8f6b22" />
+      <stop offset="0.35" stop-color="#e6c77a" />
+      <stop offset="0.6" stop-color="#a67c2e" />
+      <stop offset="0.85" stop-color="#d9b866" />
+      <stop offset="1" stop-color="#8f6b22" />
+    </linearGradient>
+    <radialGradient id="logo-pink" cx="0.4" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#fff6f5" />
+      <stop offset="1" stop-color="#f6d6d6" />
+    </radialGradient>
+  </defs>
+
+  <!-- Rings -->
+  <circle cx="200" cy="200" r="194" fill="url(#logo-gold)" />
+  <circle cx="200" cy="200" r="186" fill="#fffaf9" />
+  <circle cx="200" cy="200" r="180" fill="url(#logo-pink)" stroke="url(#logo-gold)" stroke-width="2" />
+
+  <!-- Crown -->
+  <g fill="none" stroke="url(#logo-gold)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M172 112 L176 86 L189 101 L200 80 L211 101 L224 86 L228 112 Z" />
+    <path d="M174 119 H226" />
+  </g>
+  <g fill="url(#logo-gold)">
+    <circle cx="176" cy="84" r="4" /><circle cx="200" cy="77" r="4.5" /><circle cx="224" cy="84" r="4" />
+  </g>
+
+  <!-- Name -->
+  <text x="200" y="215" text-anchor="middle" font-family="Great Vibes, cursive" font-size="104" fill="url(#logo-gold)">Soré</text>
+  <text x="203" y="258" text-anchor="middle" font-family="Inter Variable, sans-serif" font-size="20" font-weight="600" letter-spacing="14" fill="#8f6b22">NAILS</text>
+
+  <!-- Tagline with lines -->
+  <path d="M96 290 H138 M262 290 H304" stroke="url(#logo-gold)" stroke-width="1.5" />
+  <text x="200" y="295" text-anchor="middle" font-family="Inter Variable, sans-serif" font-size="12.5" letter-spacing="3" fill="#3a2a2c">BEAUTY IN DETAILS</text>
+
+  <!-- Lotus -->
+  <g fill="none" stroke="url(#logo-gold)" stroke-width="2" stroke-linejoin="round">
+    <path d="M200 312 C192 322 192 332 200 340 C208 332 208 322 200 312 Z" />
+    <path d="M200 340 C188 338 180 330 178 320 C188 320 196 328 200 340 Z" />
+    <path d="M200 340 C212 338 220 330 222 320 C212 320 204 328 200 340 Z" />
+  </g>
+  <circle cx="168" cy="330" r="2" fill="#b8913f" /><circle cx="232" cy="330" r="2" fill="#b8913f" />
+</svg>

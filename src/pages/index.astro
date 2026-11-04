@@ -5,6 +5,8 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Logo from '../components/Logo.astro';
+import Ornament from '../components/Ornament.astro';
 import { site } from '../site';
 
 // PRICES — change names and prices here. `extra: true` shows the price as
@@ -54,24 +56,21 @@ const gallery = [
   <Header />
   <main>
     <!-- Hero -->
-    <section class="relative overflow-hidden">
-      <div class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-leaf/70 blur-3xl"></div>
-      <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-16 sm:px-6 sm:pt-20 lg:grid-cols-2">
-        <div class="text-center lg:text-left">
-          <p class="text-sm font-semibold tracking-[0.35em] text-sun">SIEM REAP · CAMBODIA</p>
-          <h1 class="mt-4 font-display text-6xl font-extrabold tracking-tight text-brand sm:text-8xl">
-            SORÉ
-            <span class="mt-1 block text-2xl font-semibold tracking-[0.6em] sm:text-3xl">NAILS</span>
-          </h1>
-          <p class="mt-6 text-xl text-ink sm:text-2xl">
-            Modern &amp; elegant nail art.
-            <span class="km" lang="km">ការរចនាក្រចក ទំនើប និងប្រណីត។</span>
-          </p>
-          <div class="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
-            <a href={site.phoneLink} class="rounded-full bg-sun px-6 py-3 font-semibold text-white hover:bg-brand">
+    <section class="relative overflow-hidden bg-gradient-to-b from-leaf/80 via-paper to-paper">
+      <div class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-rose/30 blur-3xl"></div>
+      <div class="pointer-events-none absolute top-1/2 -left-40 size-80 rounded-full bg-sun/15 blur-3xl"></div>
+      <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-10 pb-16 sm:px-6 sm:pt-16 lg:grid-cols-2">
+        <div class="text-center">
+          <h1 class="sr-only">{site.name}, nail salon in Siem Reap</h1>
+          <Logo class="mx-auto w-64 drop-shadow-xl sm:w-80" />
+          <p class="mt-6 text-xs font-semibold tracking-[0.35em] text-sun">SIEM REAP · CAMBODIA</p>
+          <p class="mt-3 font-script text-4xl text-gold sm:text-5xl">Modern &amp; elegant nail art</p>
+          <p class="km text-lg text-muted" lang="km">ការរចនាក្រចក ទំនើប និងប្រណីត។</p>
+          <div class="mt-8 flex flex-wrap justify-center gap-3">
+            <a href={site.phoneLink} class="rounded-full bg-gradient-to-r from-brand via-sun to-brand px-6 py-3 font-semibold text-white shadow-lg shadow-sun/30 hover:brightness-110">
               📞 Call {site.phone}
             </a>
-            <a href="#prices" class="rounded-full bg-white px-6 py-3 font-semibold ring-1 ring-ink/10 hover:bg-brand hover:text-paper">
+            <a href="#prices" class="rounded-full bg-white px-6 py-3 font-semibold ring-1 ring-sun/50 hover:bg-leaf">
               See prices <span lang="km" class="font-khmer font-normal">មើលតម្លៃ</span>
             </a>
           </div>
@@ -94,16 +93,17 @@ const gallery = [
     </section>
 
     <!-- Prices -->
-    <section id="prices" class="scroll-mt-20 bg-white/60 py-16">
+    <section id="prices" class="scroll-mt-20 bg-leaf/50 py-16">
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 class="text-center font-display text-3xl font-bold text-brand sm:text-4xl">
+        <h2 class="text-center font-display text-4xl font-semibold text-gold sm:text-5xl">
           Prices
           <span class="km" lang="km">តម្លៃ</span>
         </h2>
+        <Ornament />
         <div class="mt-10 grid gap-6 md:grid-cols-2">
           {
             priceLists.map((list) => (
-              <div class="rounded-3xl bg-paper p-6 ring-1 ring-sun/30 sm:p-8">
+              <div class="rounded-3xl bg-white p-6 shadow-xl shadow-rose/10 ring-1 ring-sun/40 sm:p-8">
                 <h3 class="flex items-center gap-3 font-display text-2xl font-bold text-brand">
                   <span class="text-3xl">{list.icon}</span>
                   <span>
@@ -119,7 +119,7 @@ const gallery = [
                         <span class="km text-muted" lang="km">{item.nameKm}</span>
                       </span>
                       <span class="shrink-0 text-right">
-                        <span class="font-display text-xl font-extrabold text-sun">
+                        <span class="font-display text-xl font-extrabold text-sun lining-nums">
                           {item.extra && '+'}{item.price}
                         </span>
                         {item.extra && (
@@ -146,10 +146,11 @@ const gallery = [
     <!-- Gallery -->
     <section id="gallery" class="scroll-mt-20 py-16">
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 class="text-center font-display text-3xl font-bold text-brand sm:text-4xl">
+        <h2 class="text-center font-display text-4xl font-semibold text-gold sm:text-5xl">
           Our work
           <span class="km" lang="km">ស្នាដៃរបស់យើង</span>
         </h2>
+        <Ornament />
         <div class="mx-auto mt-10 grid max-w-3xl gap-6 sm:grid-cols-2">
           {
             gallery.map((g) => (
@@ -166,18 +167,19 @@ const gallery = [
     <!-- Booking form. A static site can't send messages by itself, so the form
          writes the booking as a message, and the customer sends it to us on
          Telegram or by SMS. -->
-    <section id="book" class="scroll-mt-20 bg-white/60 py-16">
+    <section id="book" class="scroll-mt-20 bg-leaf/50 py-16">
       <div class="mx-auto max-w-2xl px-4 sm:px-6">
-        <h2 class="text-center font-display text-3xl font-bold text-brand sm:text-4xl">
+        <h2 class="text-center font-display text-4xl font-semibold text-gold sm:text-5xl">
           Book online
           <span class="km" lang="km">កក់តាមអនឡាញ</span>
         </h2>
+        <Ornament />
         <p class="mt-3 text-center text-muted">
           Answer a few questions. Then send them to us on Telegram or by SMS.
           <span class="km" lang="km">ឆ្លើយសំណួរពីរបី។ បន្ទាប់មក ផ្ញើវាមកយើងតាម Telegram ឬ SMS។</span>
         </p>
 
-        <form id="booking" class="mt-8 grid gap-5 rounded-3xl bg-paper p-6 ring-1 ring-sun/30 sm:grid-cols-2 sm:p-8">
+        <form id="booking" class="mt-8 grid gap-5 rounded-3xl bg-white p-6 shadow-xl shadow-rose/10 ring-1 ring-sun/40 sm:grid-cols-2 sm:p-8">
           <label class="block">
             <span class="font-semibold">Your name <span class="km text-muted" lang="km">ឈ្មោះរបស់អ្នក</span></span>
             <input name="name" required autocomplete="name" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
@@ -250,13 +252,13 @@ const gallery = [
           </h2>
           <ul class="mt-8 space-y-5 text-lg">
             <li>
-              <a href={site.phoneLink} class="flex items-start gap-4 hover:text-sun">
+              <a href={site.phoneLink} class="flex items-start gap-4 hover:text-leaf">
                 <span class="text-2xl">📞</span>
                 <span><b>{site.phone}</b> <span class="km text-paper/70" lang="km">ទូរសព្ទមកកក់</span></span>
               </a>
             </li>
             <li>
-              <a href={site.telegram} class="flex items-start gap-4 hover:text-sun" target="_blank" rel="noopener">
+              <a href={site.telegram} class="flex items-start gap-4 hover:text-leaf" target="_blank" rel="noopener">
                 <span class="text-2xl">✈️</span>
                 <span><b>Telegram: {site.telegramName}</b> <span class="km text-paper/70" lang="km">ផ្ញើសារមកយើងតាម Telegram</span></span>
               </a>
@@ -264,11 +266,11 @@ const gallery = [
             <li class="flex items-start gap-4">
               <span class="text-2xl">💬</span>
               <span>
-                <b>Facebook:</b>
+                <b>Facebook:</b>{" "}
                 {site.facebook.map((fb, i) => (
                   <>
                     {i > 0 && <span class="text-paper/50"> or </span>}
-                    <a href={fb.link} class="font-bold underline underline-offset-4 hover:text-sun" target="_blank" rel="noopener">{fb.name}</a>
+                    <a href={fb.link} class="font-bold underline underline-offset-4 hover:text-leaf" target="_blank" rel="noopener">{fb.name}</a>
                   </>
                 ))}
                 <span class="km text-paper/70" lang="km">ផ្ញើសារមកយើងតាម Facebook</span>
@@ -283,15 +285,15 @@ const gallery = [
               <span><b>{site.hours}</b> <span class="km text-paper/70" lang="km">{site.hoursKm}</span></span>
             </li>
           </ul>
-          <p class="mt-8 inline-block rounded-full border border-sun px-5 py-2 text-sm font-semibold tracking-widest text-sun">
+          <p class="mt-8 inline-block rounded-full border border-white px-5 py-2 text-sm font-semibold tracking-widest text-white">
             WALK-INS WELCOME
           </p>
         </div>
 
         <!-- KHQR payment code -->
         <div class="mx-auto text-center">
-          <img src="/images/khqr.png" alt="KHQR code to pay SORÉ Nails" class="w-52 rounded-2xl ring-4 ring-sun" loading="lazy" />
-          <p class="mt-3 text-sm font-semibold tracking-widest text-sun">SCAN TO PAY</p>
+          <img src="/images/khqr.png" alt="KHQR code to pay SORÉ Nails" class="w-52 rounded-2xl ring-4 ring-white" loading="lazy" />
+          <p class="mt-3 text-sm font-semibold tracking-widest text-white">SCAN TO PAY</p>
           <p class="km text-paper/70" lang="km">ស្កេនដើម្បីបង់ប្រាក់</p>
         </div>
       </div>

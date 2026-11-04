@@ -4,24 +4,36 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/bricolage-grotesque";
 @import "@fontsource-variable/kantumruy-pro";
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource/great-vibes";
 
 /*
   BRAND SETTINGS — change these to restyle the whole site.
   Every color class like `bg-brand` or `text-ink` comes from here.
 */
 @theme {
-  --color-ink: #2a2230;        /* main text */
-  --color-paper: #f8f0e7;      /* page background */
-  --color-brand: #1d2f4f;      /* main accent (buttons, highlights) */
-  --color-brand-dark: #13203a;
-  --color-sun: #b8913f;        /* second accent */
-  --color-leaf: #efd3c6;       /* third accent */
-  --color-muted: #6b5a5f;      /* quieter text */
+  --color-ink: #3a2a2c;        /* main text */
+  --color-paper: #fffaf9;      /* page background (soft pink white) */
+  --color-brand: #8f6b22;      /* main accent: deep gold */
+  --color-brand-dark: #6f5218;
+  --color-sun: #b8913f;        /* second accent: gold */
+  --color-leaf: #f8e1e1;       /* third accent: blush pink */
+  --color-rose: #d9909c;       /* pink, like nail polish */
+  --color-muted: #806b6e;      /* quieter text */
 
   /* Khmer is listed in every font stack so Khmer text always renders well. */
   --font-sans: "Inter Variable", "Kantumruy Pro Variable", system-ui, sans-serif;
-  --font-display: "Bricolage Grotesque Variable", "Kantumruy Pro Variable", system-ui, sans-serif;
+  --font-display: "Playfair Display Variable", "Kantumruy Pro Variable", Georgia, serif;
+  --font-script: "Great Vibes", "Kantumruy Pro Variable", cursive;
   --font-khmer: "Kantumruy Pro Variable", system-ui, sans-serif;
+}
+
+/* Shiny gold text, like the gold letters on a salon sign. */
+@utility text-gold {
+  background: linear-gradient(100deg, #8f6b22 0%, #d9b866 35%, #a67c2e 60%, #e6c77a 85%, #8f6b22 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 html {
