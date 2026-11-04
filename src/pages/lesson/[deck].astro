@@ -1,0 +1,16 @@
+---
+// One page per Markdown file in src/content/decks/ — e.g. day-1.md → /lesson/day-1
+import Base from '../../layouts/Base.astro';
+import Deck from '../../components/Deck.astro';
+import { getDecks } from '../../lib/decks';
+
+export function getStaticPaths() {
+  return getDecks().map((deck) => ({ params: { deck: deck.slug }, props: { deck } }));
+}
+
+const { deck } = Astro.props;
+---
+
+<Base title={deck.title} description={deck.subtitle}>
+  <Deck deck={deck} />
+</Base>

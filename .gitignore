@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.dev.vars
+.env
+.DS_Store
+
+# Original photos before resizing (see photos-inbox in chat)
+photos-inbox/

@@ -1,0 +1,15 @@
+---
+import { site } from '../site';
+---
+
+<footer class="border-t border-ink/10">
+  <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-10 text-sm text-muted sm:flex-row sm:justify-between sm:px-6">
+    <p>
+      © {new Date().getFullYear()} {site.name}. Built with AI, on purpose.
+      <span class="km" lang="km">បង្កើតដោយ AI ដោយចេតនា។</span>
+    </p>
+    <p>
+      Questions? <span lang="km" class="font-khmer">មានសំណួរ?</span> <a href={`mailto:${site.contactEmail}`} class="font-medium text-ink underline underline-offset-4 hover:text-brand">{site.contactEmail}</a>
+    </p>
+  </div>
+</footer>

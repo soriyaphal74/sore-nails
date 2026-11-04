@@ -1,0 +1,143 @@
+---
+// The computer setup guides, as a page at /setup with a Mac / Windows switch.
+// The words live in docs/mac-setup.md and docs/windows-setup.md, so edit those
+// files to change this page. Link to /setup#windows to open the Windows guide.
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import mac from '../../docs/mac-setup.md?raw';
+import windows from '../../docs/windows-setup.md?raw';
+import { getDecks, renderMarkdown } from '../lib/decks';
+
+const guides = [
+  { id: 'mac', label: 'Mac', html: renderMarkdown(mac) },
+  { id: 'windows', label: 'Windows', html: renderMarkdown(windows) },
+];
+const hasSlides = getDecks().some((deck) => deck.slug === 'setup');
+---
+
+<Base title="Set up your computer" description="Install the Claude app, then let the AI set up the rest of your Mac or Windows computer for building websites.">
+  <Header />
+  <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-20">
+    <div class="mb-10 flex flex-wrap items-center gap-3">
+      <span class="font-semibold text-muted">I have a <span lang="km" class="font-khmer font-normal">· ខ្ញុំមាន</span></span>
+      <div class="inline-flex rounded-full border border-ink/15 bg-white p-1" role="tablist">
+        {
+          guides.map((g, i) => (
+            <button type="button" role="tab" class="os-tab rounded-full px-5 py-1.5 font-semibold" data-os={g.id} aria-selected={i === 0 ? 'true' : 'false'}>
+              {g.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    {
+      guides.map((g, i) => (
+        <article class="guide" data-os={g.id} hidden={i !== 0}>
+          <Fragment set:html={g.html} />
+        </article>
+      ))
+    }
+    {
+      hasSlides && (
+        <p class="mt-16 border-t border-ink/10 pt-8 text-muted">
+          Prefer slides? See the <a href="/lesson/setup" class="font-semibold text-brand underline underline-offset-4">Setup lesson</a>.
+          <span class="km" lang="km">ចូលចិត្តស្លាយជាង? មើលមេរៀនរៀបចំកុំព្យូទ័រ។</span>
+        </p>
+      )
+    }
+  </main>
+  <Footer />
+</Base>
+
+<style is:global>
+  .guide { line-height: 1.7; font-size: 1.075rem; }
+  .guide h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+  .guide h2 { font-family: var(--font-display); font-size: 1.75rem; font-weight: 750; letter-spacing: -0.01em; margin: 3rem 0 1rem; }
+  .guide h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+  .guide p, .guide ul, .guide ol, .guide table, .guide pre, .guide blockquote { margin-bottom: 1.1rem; }
+  .guide ul { list-style: disc; padding-left: 1.4rem; }
+  .guide ol { list-style: decimal; padding-left: 1.4rem; }
+  .guide li { margin: 0.35rem 0; }
+  .guide li::marker { color: var(--color-brand); }
+  .guide a { color: var(--color-brand); font-weight: 600; text-decoration: underline; text-underline-offset: 0.2em; }
+  .guide strong { font-weight: 700; }
+  .guide code { font-size: 0.9em; background: color-mix(in srgb, var(--color-ink) 8%, transparent); padding: 0.1em 0.35em; border-radius: 0.3em; }
+  .guide pre { position: relative; background: var(--color-ink); color: var(--color-paper); padding: 1rem 1.25rem; padding-right: 5.5rem; border-radius: 0.75rem; overflow-x: auto; font-size: 0.95rem; }
+  .guide pre code { background: none; padding: 0; }
+  .guide blockquote { position: relative; background: #fff; border-left: 4px solid var(--color-sun); border-radius: 0.25rem 0.75rem 0.75rem 0.25rem; padding: 1.25rem 1.5rem; padding-top: 3.25rem; box-shadow: 0 10px 30px -15px #0003; }
+  .guide blockquote p:last-child { margin-bottom: 0; }
+  .guide table { width: 100%; border-collapse: collapse; font-size: 0.95rem; display: block; overflow-x: auto; }
+  .guide th, .guide td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent); vertical-align: top; }
+  .guide th { font-weight: 700; }
+
+  .os-tab[aria-selected='true'] { background: var(--color-brand); color: var(--color-paper); }
+
+  .copy-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--color-brand);
+    color: var(--color-paper);
+  }
+  .copy-btn:lang(km), .copy-btn:nth-of-type(2) { font-family: var(--font-khmer); }
+  .copy-btn:hover { background: var(--color-brand-dark); }
+</style>
+
+<script>
+  // Mac / Windows switch: opens #windows or #mac from the link, otherwise guesses
+  // from the visitor's computer.
+  function showGuide(os: string) {
+    for (const el of document.querySelectorAll<HTMLElement>('[data-os]')) {
+      if (el.matches('.os-tab')) el.setAttribute('aria-selected', String(el.dataset.os === os));
+      else el.hidden = el.dataset.os !== os;
+    }
+  }
+  const fromLink = () => (['mac', 'windows'].includes(location.hash.slice(1)) ? location.hash.slice(1) : '');
+  showGuide(fromLink() || (/Windows/.test(navigator.userAgent) ? 'windows' : 'mac'));
+  addEventListener('hashchange', () => fromLink() && showGuide(fromLink()));
+  for (const tab of document.querySelectorAll<HTMLElement>('.os-tab')) {
+    tab.addEventListener('click', () => {
+      showGuide(tab.dataset.os!);
+      history.replaceState(null, '', `#${tab.dataset.os}`);
+    });
+  }
+
+  // Add "Copy" buttons to every command and prompt, so nobody has to retype them.
+  // Prompts get two: one copies the English, the other copies the Khmer caption lines.
+  const english = (p: HTMLElement) => {
+    const clone = p.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('.km').forEach((km) => km.remove());
+    return clone.innerText.trim();
+  };
+  const khmer = (p: HTMLElement) => [...p.querySelectorAll<HTMLElement>('.km')].map((km) => km.innerText.trim()).join(' ');
+
+  function addButton(block: HTMLElement, label: string, getText: () => string, offset = 0) {
+    const button = document.createElement('button');
+    button.className = 'copy-btn';
+    button.textContent = label;
+    if (offset) button.style.right = `${offset}rem`;
+    button.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(getText());
+      button.textContent = 'Copied ✓';
+      setTimeout(() => (button.textContent = label), 1500);
+    });
+    block.append(button);
+  }
+
+  for (const pre of document.querySelectorAll<HTMLElement>('.guide pre')) {
+    addButton(pre, 'Copy', () => pre.querySelector('code')?.innerText.trim() ?? '');
+  }
+  for (const quote of document.querySelectorAll<HTMLElement>('.guide blockquote')) {
+    const paragraphs = [...quote.querySelectorAll<HTMLElement>('p')];
+    addButton(quote, 'Copy message', () => paragraphs.map(english).join('\n\n'));
+    if (quote.querySelector('.km')) {
+      addButton(quote, 'ចម្លងជាភាសាខ្មែរ', () => paragraphs.map(khmer).filter(Boolean).join('\n\n'), 9);
+    }
+  }
+</script>

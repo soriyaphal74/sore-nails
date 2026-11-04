@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Fonts are installed from npm (not Google Fonts) so the site works offline. */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/kantumruy-pro";
+
+/*
+  BRAND SETTINGS — change these to restyle the whole site.
+  Every color class like `bg-brand` or `text-ink` comes from here.
+*/
+@theme {
+  --color-ink: #1d1a2e;        /* main text */
+  --color-paper: #fbf7f0;      /* page background */
+  --color-brand: #e2552f;      /* main accent (buttons, highlights) */
+  --color-brand-dark: #b83d1c;
+  --color-sun: #f4b33d;        /* second accent */
+  --color-leaf: #2f7d63;       /* third accent */
+  --color-muted: #6b6578;      /* quieter text */
+
+  /* Khmer is listed in every font stack so Khmer text always renders well. */
+  --font-sans: "Inter Variable", "Kantumruy Pro Variable", system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Kantumruy Pro Variable", system-ui, sans-serif;
+  --font-khmer: "Kantumruy Pro Variable", system-ui, sans-serif;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Khmer script needs a little more line height than English. */
+:lang(km) {
+  font-family: var(--font-khmer);
+  line-height: 1.8;
+}
+
+/*
+  KHMER CAPTIONS — <span class="km" lang="km"> under an English line.
+  In Markdown, write a line starting with "km:" (see docs/editing-slides.md).
+  In .astro pages, use <span class="km" lang="km">…</span>; Tailwind classes on it
+  (like text-xl) win over these defaults, because these sit in the components layer.
+*/
+@layer components {
+  .km {
+    display: block;
+    margin-top: 0.1em;
+    font-size: 0.85em;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.7;
+    opacity: 0.8;
+  }
+  /* Inside a heading, the caption is a smaller line under the heading text. */
+  :is(h2, h3) > .km { margin-top: 0.3em; font-size: 0.6em; font-weight: 600; letter-spacing: 0; }
+  h1 > .km { margin-top: 0.3em; font-size: 0.5em; font-weight: 600; letter-spacing: 0; }
+}
+

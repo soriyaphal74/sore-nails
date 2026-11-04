@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+---
+
+<Base title="Page not found">
+  <Header />
+  <main class="mx-auto max-w-xl px-4 py-32 text-center">
+    <p class="font-display text-7xl font-extrabold text-brand">404</p>
+    <h1 class="mt-4 font-display text-3xl font-bold">This page doesn't exist.</h1>
+    <p class="km mt-2 text-xl font-semibold" lang="km">រកមិនឃើញទំព័រនេះទេ។</p>
+    <a href="/" class="mt-8 inline-block rounded-full bg-ink px-6 py-3 font-semibold text-paper hover:bg-brand">Go home <span lang="km" class="font-khmer font-normal">ទៅទំព័រដើម</span></a>
+  </main>
+</Base>
