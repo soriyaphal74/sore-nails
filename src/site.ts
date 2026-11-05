@@ -8,7 +8,6 @@ export const site = {
   contactEmail: 'hello@example.com', // TODO: put your real email here
   phone: '087 674 872',
   phoneLink: 'tel:+85587674872',
-  smsLink: 'sms:+85587674872',
   telegramName: '@SORIYA_PHAL',
   telegram: 'https://t.me/SORIYA_PHAL',
   // TODO: replace each link with the real Facebook address (open the page, copy the address)

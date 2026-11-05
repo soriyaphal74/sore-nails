@@ -46,6 +46,9 @@ const priceLists = [
   },
 ];
 
+// The Facebook account for the "Book on Facebook" button.
+const bookFacebook = site.facebook.find((fb) => fb.name === 'Ah Soriya') ?? site.facebook[0];
+
 const gallery = [
   { src: '/images/nails-gold.jpg', alt: 'Long almond nails with gold foil edges and glitter', label: 'Gold Design' },
   { src: '/images/nails-navy.jpg', alt: 'Navy and white nails with stars and polka dots', label: 'Nail Art' },
@@ -164,29 +167,28 @@ const gallery = [
       </div>
     </section>
 
-    <!-- Booking form. A static site can't send messages by itself, so the form
-         writes the booking as a message, and the customer sends it to us on
-         Telegram or by SMS. -->
+    <!-- Booking: big buttons that open a chat or a call with us. -->
     <section id="book" class="scroll-mt-20 bg-leaf/50 py-16">
       <div class="mx-auto max-w-2xl px-4 sm:px-6">
         <h2 class="text-center font-display text-4xl font-semibold text-gold sm:text-5xl">
-          Book online
-          <span class="km" lang="km">កក់តាមអនឡាញ</span>
+          Book now
+          <span class="km" lang="km">កក់ឥឡូវនេះ</span>
         </h2>
         <Ornament />
         <p class="mt-3 text-center text-muted">
-          Answer a few questions. Then send them to us on Telegram or by SMS.
-          <span class="km" lang="km">ឆ្លើយសំណួរពីរបី។ បន្ទាប់មក ផ្ញើវាមកយើងតាម Telegram ឬ SMS។</span>
+          Fill in the form and we get your booking on Telegram right away. We will message or call you to confirm.
+          <span class="km" lang="km">បំពេញទម្រង់ ហើយយើងនឹងទទួលបានការកក់របស់អ្នកតាម Telegram ភ្លាមៗ។ យើងនឹងផ្ញើសារ ឬហៅទូរសព្ទទៅអ្នក ដើម្បីបញ្ជាក់។</span>
         </p>
 
+        <!-- Booking form: sent to /api/book (worker/index.ts), which sends it to our Telegram. -->
         <form id="booking" class="mt-8 grid gap-5 rounded-3xl bg-white p-6 shadow-xl shadow-rose/10 ring-1 ring-sun/40 sm:grid-cols-2 sm:p-8">
           <label class="block">
             <span class="font-semibold">Your name <span class="km text-muted" lang="km">ឈ្មោះរបស់អ្នក</span></span>
-            <input name="name" required autocomplete="name" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+            <input name="name" required maxlength="80" autocomplete="name" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
           </label>
           <label class="block">
             <span class="font-semibold">Your phone <span class="km text-muted" lang="km">លេខទូរសព្ទរបស់អ្នក</span></span>
-            <input name="phone" type="tel" required autocomplete="tel" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+            <input name="phone" type="tel" required maxlength="30" autocomplete="tel" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
           </label>
           <label class="block sm:col-span-2">
             <span class="font-semibold">Which service? <span class="km text-muted" lang="km">សេវាកម្មណា?</span></span>
@@ -206,39 +208,45 @@ const gallery = [
             </select>
           </label>
           <label class="block">
-            <span class="font-semibold">Date <span class="km text-muted" lang="km">ថ្ងៃ</span></span>
-            <input name="date" type="date" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+            <span class="font-semibold">Day <span class="km text-muted" lang="km">ថ្ងៃ</span></span>
+            <input name="date" type="date" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
           </label>
           <label class="block">
             <span class="font-semibold">Time <span class="km text-muted" lang="km">ម៉ោង</span> <span class="text-sm font-normal text-muted">(8am – 9pm)</span></span>
-            <input name="time" type="time" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
+            <input name="time" type="time" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
           </label>
-          <label class="block">
-            <span class="font-semibold">How many people? <span class="km text-muted" lang="km">ប៉ុន្មាននាក់?</span></span>
-            <input name="people" type="number" min="1" max="10" value="1" required class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3" />
-          </label>
-          <fieldset>
-            <legend class="font-semibold">First time here? <span class="km text-muted" lang="km">មកលើកដំបូង?</span></legend>
-            <div class="mt-3 flex gap-5">
-              <label class="flex items-center gap-2"><input type="radio" name="first" value="Yes" /> Yes / បាទ·ចាស</label>
-              <label class="flex items-center gap-2"><input type="radio" name="first" value="No" checked /> No / ទេ</label>
-            </div>
-          </fieldset>
           <label class="block sm:col-span-2">
             <span class="font-semibold">Color or design idea? <span class="km text-muted" lang="km">ពណ៌ ឬគំនិតរចនា?</span></span>
-            <textarea name="notes" rows="3" placeholder="e.g. pink gel with gold stars" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3"></textarea>
+            <textarea name="notes" rows="3" maxlength="500" placeholder="e.g. pink gel with gold stars" class="mt-2 w-full rounded-xl border border-ink/15 bg-white px-4 py-3"></textarea>
           </label>
+          <!-- Hidden from people. Robots fill it in, so the server ignores those. -->
+          <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
-          <div class="grid gap-3 sm:col-span-2 sm:grid-cols-2">
-            <button type="button" data-send="telegram" class="rounded-full bg-[#229ED9] px-6 py-3 font-semibold text-white hover:opacity-90">
-              ✈️ Send on Telegram
-            </button>
-            <button type="button" data-send="sms" class="rounded-full bg-brand px-6 py-3 font-semibold text-paper hover:bg-brand-dark">
-              💬 Send by SMS
-            </button>
-          </div>
-          <p id="booking-note" class="hidden rounded-xl bg-leaf/50 p-4 text-sm sm:col-span-2"></p>
+          <button type="submit" class="rounded-full bg-gradient-to-r from-brand via-sun to-brand px-6 py-4 text-lg font-semibold text-white hover:brightness-110 disabled:opacity-60 sm:col-span-2">
+            📩 Send booking <span lang="km" class="font-khmer font-normal">ផ្ញើការកក់</span>
+          </button>
+          <p id="booking-status" role="status" class="hidden rounded-xl p-4 text-center sm:col-span-2"></p>
         </form>
+
+        <p class="mt-10 text-center font-semibold text-brand">
+          Or contact us directly
+          <span class="km font-normal text-muted" lang="km">ឬទាក់ទងយើងដោយផ្ទាល់</span>
+        </p>
+        <div class="mt-4 grid gap-4 rounded-3xl bg-white p-6 shadow-xl shadow-rose/10 ring-1 ring-sun/40 sm:p-8">
+          <a href={site.telegram} target="_blank" rel="noopener" class="flex flex-wrap items-center justify-center gap-x-3 rounded-full bg-[#229ED9] px-6 py-4 text-lg font-semibold text-white hover:opacity-90">
+            ✈️ Book on Telegram <span lang="km" class="font-khmer font-normal">កក់តាម Telegram</span>
+          </a>
+          <a href={site.phoneLink} class="flex flex-wrap items-center justify-center gap-x-3 rounded-full bg-gradient-to-r from-brand via-sun to-brand px-6 py-4 text-lg font-semibold text-white hover:brightness-110">
+            📞 Call {site.phone} <span lang="km" class="font-khmer font-normal">ហៅទូរសព្ទ</span>
+          </a>
+          <a href={bookFacebook.link} target="_blank" rel="noopener" class="flex flex-wrap items-center justify-center gap-x-3 rounded-full bg-[#1877F2] px-6 py-4 text-lg font-semibold text-white hover:opacity-90">
+            💬 Book on Facebook <span lang="km" class="font-khmer font-normal">កក់តាម Facebook</span>
+          </a>
+          <p class="text-center text-sm text-muted">
+            🕗 {site.hours} · Walk-ins welcome
+            <span class="km" lang="km">{site.hoursKm} · ស្វាគមន៍ការដើរចូល</span>
+          </p>
+        </div>
       </div>
     </section>
 
@@ -302,56 +310,40 @@ const gallery = [
   <Footer />
 </Base>
 
-<script define:vars={{ telegram: site.telegram, sms: site.smsLink }}>
-  // Turns the booking answers into one message, then opens Telegram or SMS
-  // so the customer can send it to us.
-  const form = document.getElementById('booking');
-  const note = document.getElementById('booking-note');
+<script>
+  // Sends the booking form to /api/book. The server (worker/index.ts) passes
+  // it on to the salon's Telegram.
+  const form = document.getElementById('booking') as HTMLFormElement;
+  const status = document.getElementById('booking-status')!;
+  const button = form.querySelector('button[type=submit]') as HTMLButtonElement;
 
-  function bookingMessage() {
-    const d = new FormData(form);
-    return [
-      'Hello SORÉ Nails! I want to book:',
-      `Name: ${d.get('name')}`,
-      `Phone: ${d.get('phone')}`,
-      `Service: ${d.get('service')}`,
-      `Date: ${d.get('date')}`,
-      `Time: ${d.get('time')}`,
-      `People: ${d.get('people')}`,
-      `First time: ${d.get('first')}`,
-      d.get('notes') ? `Idea: ${d.get('notes')}` : '',
-    ]
-      .filter(Boolean)
-      .join('\n');
+  function show(kind: 'ok' | 'error', html: string) {
+    status.innerHTML = html;
+    status.className = `rounded-xl p-4 text-center sm:col-span-2 ${kind === 'ok' ? 'bg-leaf' : 'bg-red-50 text-red-800'}`;
   }
 
-  form.querySelectorAll('button[data-send]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      if (!form.reportValidity()) return;
-      const msg = bookingMessage();
-
-      if (btn.dataset.send === 'sms') {
-        window.location.href = `${sms}?&body=${encodeURIComponent(msg)}`;
-        return;
-      }
-
-      // Telegram can't fill in a message for a person, so we copy it first,
-      // then open the chat. We open it in this same tab: browsers block a new
-      // window that opens after waiting for the copy.
-      const openLink = `<a href="${telegram}" class="mt-2 inline-block rounded-full bg-[#229ED9] px-4 py-2 font-semibold text-white">✈️ Open Telegram</a>`;
-      note.classList.remove('hidden');
-      try {
-        await navigator.clipboard.writeText(msg);
-        note.innerHTML =
-          '✅ Your booking is copied. In Telegram, <b>paste it</b> and press send.<br><span lang="km">✅ ការកក់របស់អ្នកត្រូវបានចម្លង។ នៅក្នុង Telegram សូម<b>បិទភ្ជាប់</b> ហើយចុចផ្ញើ។</span><br>' +
-          openLink;
-        setTimeout(() => (window.location.href = telegram), 1500);
-      } catch {
-        // Copy didn't work: show the message so they can copy it by hand.
-        note.style.whiteSpace = 'pre-line';
-        note.textContent = 'Copy this message and send it to us on Telegram:\n\n' + msg + '\n\n';
-        note.insertAdjacentHTML('beforeend', openLink);
-      }
-    });
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    button.disabled = true;
+    try {
+      const response = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      if (!response.ok) throw new Error(String(response.status));
+      form.reset();
+      show(
+        'ok',
+        '✅ Thank you! We got your booking. We will contact you soon to confirm.<br><span lang="km">✅ អរគុណ! យើងបានទទួលការកក់របស់អ្នកហើយ។ យើងនឹងទាក់ទងអ្នកឆាប់ៗ ដើម្បីបញ្ជាក់។</span>',
+      );
+    } catch {
+      show(
+        'error',
+        'Sorry, the booking did not send. Please use Telegram or call us below.<br><span lang="km">សុំទោស ការកក់មិនបានផ្ញើទេ។ សូមប្រើ Telegram ឬហៅទូរសព្ទមកយើងខាងក្រោម។</span>',
+      );
+    } finally {
+      button.disabled = false;
+    }
   });
 </script>

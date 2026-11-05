@@ -1,18 +1,28 @@
-// Cloudflare Workers config. This site is pure static files, so there is no
-// server code: Cloudflare just serves whatever `npm run build` puts in ./dist.
+// Cloudflare Workers config. Most of this site is static files: Cloudflare
+// serves whatever `npm run build` puts in ./dist. The one exception is the
+// booking form: requests to /api/* run the small server code in
+// worker/index.ts, which sends each booking to Telegram.
 //
 // IMPORTANT: "name" must match the Worker name you pick in the Cloudflare
 // dashboard when you connect this repo, or builds will fail.
+//
+// The booking form also needs two secrets, added in the Cloudflare dashboard
+// (Worker → Settings → Variables and Secrets), never written in this file:
+//   TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sore-nails",
   "compatibility_date": "2026-10-01",
+  "main": "worker/index.ts",
   // Build the site before every deploy. ./dist is not stored in GitHub, so it
   // must be created here, even if the Cloudflare dashboard has no build command.
   "build": { "command": "npm run build" },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "404-page"
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // Send /api/* to worker/index.ts before looking for a file.
+    "run_worker_first": ["/api/*"]
   },
   // Turns on preview links: every branch and pull request gets its own private
   // copy of the site. Empty is fine; everything above applies to previews too.
